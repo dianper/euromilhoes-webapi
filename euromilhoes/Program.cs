@@ -2,6 +2,7 @@ using euromilhoes.Services;
 using euromilhoes.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 
 // Add services to the container.
 builder.Services.AddSingleton<IEuromilhoesService, EuromilhoesService>();
