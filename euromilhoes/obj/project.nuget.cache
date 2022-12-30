@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5K7uIo/XaDw+/IyeowKtQ8Ap/AwDxpqUclCwYR+rzvEwLTqc08g37LN7gkj1Vpss7UXdRedZ/5zGcxDoEZOzsA==",
+  "dgSpecHash": "O2loLzPAxTjGgGOw4E7lcTmvltUozaxCfprDSYsgwKjDD4MDdB6KxgISeFjoELm6ij7AoS+XRYFpDhj0K51x6w==",
   "success": true,
-  "projectFilePath": "C:\\Projects\\personal\\euromilhoes\\euromilhoes\\euromilhoes.csproj",
+  "projectFilePath": "C:\\Projects\\personal\\euromilhoes-webapi\\euromilhoes\\euromilhoes.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\diego.pereira\\.nuget\\packages\\htmlagilitypack.netcore\\1.5.0.1\\htmlagilitypack.netcore.1.5.0.1.nupkg.sha512",
     "C:\\Users\\diego.pereira\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",

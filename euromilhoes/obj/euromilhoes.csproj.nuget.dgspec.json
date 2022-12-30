@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\personal\\euromilhoes\\euromilhoes\\euromilhoes.csproj": {}
+    "C:\\Projects\\personal\\euromilhoes-webapi\\euromilhoes\\euromilhoes.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\personal\\euromilhoes\\euromilhoes\\euromilhoes.csproj": {
+    "C:\\Projects\\personal\\euromilhoes-webapi\\euromilhoes\\euromilhoes.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\personal\\euromilhoes\\euromilhoes\\euromilhoes.csproj",
+        "projectUniqueName": "C:\\Projects\\personal\\euromilhoes-webapi\\euromilhoes\\euromilhoes.csproj",
         "projectName": "euromilhoes",
-        "projectPath": "C:\\Projects\\personal\\euromilhoes\\euromilhoes\\euromilhoes.csproj",
+        "projectPath": "C:\\Projects\\personal\\euromilhoes-webapi\\euromilhoes\\euromilhoes.csproj",
         "packagesPath": "C:\\Users\\diego.pereira\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\personal\\euromilhoes\\euromilhoes\\obj\\",
+        "outputPath": "C:\\Projects\\personal\\euromilhoes-webapi\\euromilhoes\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\diego.pereira\\AppData\\Roaming\\NuGet\\NuGet.Config",
