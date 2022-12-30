@@ -65,8 +65,15 @@ public class EuromilhoesService : IEuromilhoesService
         return string.Join("-", result.OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
     }
 
-    public EuromilhoesResult? GetByNumbers(string numbers) => 
-        this.Results.FirstOrDefault(x => x.Numbers.Equals(numbers));
+    public EuromilhoesResult? GetByNumbers(string numbers) =>
+        this.Results
+            .FirstOrDefault(x => x.Numbers.Equals(numbers));
+
+    public IEnumerable<EuromilhoesResult> GetRepeated() =>
+        this.Results
+            .GroupBy(s => s.Numbers)
+            .Where(x => x.Count() > 1)
+            .SelectMany(x => x);
 
     private IEnumerable<EuromilhoesResult> ParseHtml(string html)
     {

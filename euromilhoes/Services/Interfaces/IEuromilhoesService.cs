@@ -1,15 +1,16 @@
-﻿using euromilhoes.Models;
+﻿namespace euromilhoes.Services.Interfaces;
 
-namespace euromilhoes.Services.Interfaces
+using euromilhoes.Models;
+
+public interface IEuromilhoesService
 {
-    public interface IEuromilhoesService
-    {
-        Task<IEnumerable<EuromilhoesResult>> GetAsync(string year, CancellationToken cancellationToken = default);
+    Task<IEnumerable<EuromilhoesResult>> GetAsync(string year, CancellationToken cancellationToken = default);
 
-        IReadOnlyList<EuromilhoesResult> Results { get; set; }
+    IReadOnlyList<EuromilhoesResult> Results { get; set; }
 
-        string GenerateNumbers();
+    string GenerateNumbers();
 
-        EuromilhoesResult? GetByNumbers(string numbers);
-    }
+    EuromilhoesResult? GetByNumbers(string numbers);
+
+    IEnumerable<EuromilhoesResult> GetRepeated();
 }

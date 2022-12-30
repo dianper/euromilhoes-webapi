@@ -17,13 +17,7 @@ public class EuromilhoesController : ControllerBase
     [HttpGet]
     public IActionResult Last10()
     {
-        return Ok(this.euromilhoesService.Results.Take(10).Select(x => new
-        {
-            date = x.DateString,
-            value = x.Value,
-            numbers = x.Numbers,
-            starts = x.Stars
-        }));
+        return Ok(this.euromilhoesService.Results.Take(10));
     }
 
     [HttpGet]
@@ -59,5 +53,11 @@ public class EuromilhoesController : ControllerBase
             exists = result != null,
             result
         });
+    }
+
+    [HttpGet]
+    public IActionResult Repeated()
+    {
+        return Ok(this.euromilhoesService.GetRepeated());
     }
 }
