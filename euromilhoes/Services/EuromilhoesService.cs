@@ -6,44 +6,53 @@ using HtmlAgilityPack;
 
 public class EuromilhoesService : IEuromilhoesService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<EuromilhoesService> _logger;
+    private readonly HttpClient client;
+    private readonly ILogger<EuromilhoesService> logger;
+    private IReadOnlyList<EuromilhoesResult> results;
+    private const int Start = 2004;
 
     public EuromilhoesService(
         IHttpClientFactory httpClientFactory,
         ILogger<EuromilhoesService> logger)
     {
-        this._httpClientFactory = httpClientFactory;
-        this._logger = logger;
-
-        this.Results = new List<EuromilhoesResult>();
+        this.client = httpClientFactory.CreateClient("euromilhoes");
+        this.logger = logger;
+        this.results = new List<EuromilhoesResult>();
     }
 
-    public IReadOnlyList<EuromilhoesResult> Results { get; set; }
-
-    public async Task<IEnumerable<EuromilhoesResult>> GetAsync(string year, CancellationToken cancellationToken = default)
+    public async Task DoCrawlingAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            using var client = this._httpClientFactory.CreateClient("euromilhoes");
-            var httpResponseMessage = await client.GetAsync("resultados-euromilhoes.asp?y=" + year, cancellationToken);
-            httpResponseMessage.EnsureSuccessStatusCode();
+            var years = Enumerable.Range(Start, (DateTime.Now.Year + 1) - Start);
 
-            var html = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
-            if (string.IsNullOrEmpty(html))
-            {
-                return Enumerable.Empty<EuromilhoesResult>();
-            }
+            var tasks = years.Select(y => client.GetAsync("resultados-euromilhoes.asp?y=" + y, cancellationToken));
+            var responses = await Task.WhenAll(tasks);
 
-            return ParseHtml(html);
+            var tasksOfString = responses.Select(response => response.Content.ReadAsStringAsync(cancellationToken));
+            var htmls = await Task.WhenAll(tasksOfString);
+
+            this.results = htmls
+                .SelectMany(x => ParseHtml(x))
+                .ToList();
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, ex?.Message);
-
-            return Enumerable.Empty<EuromilhoesResult>();
+            this.logger.LogError(ex, ex.Message);
         }
     }
+
+    public IEnumerable<EuromilhoesResult> GetLast10() => this.results.OrderByDescending(d => d.Date).Take(10);
+
+    public IEnumerable<EuromilhoesResult> GetRepeated() =>
+        this.results
+            .GroupBy(s => s.Numbers)
+            .Where(x => x.Count() > 1)
+            .SelectMany(x => x);
+
+    public EuromilhoesResult? GetByNumbers(string numbers) =>
+        this.results
+            .FirstOrDefault(x => x.Numbers.Equals(numbers));
 
     public string GenerateNumbers()
     {
@@ -62,20 +71,17 @@ public class EuromilhoesService : IEuromilhoesService
             } while (!result.Add(num));
         }
 
-        return string.Join("-", result.OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
+        var numbers = string.Join("-", result.OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
+        
+        if (this.GetByNumbers(numbers) == null)
+        {
+            return numbers;
+        }
+
+        return GenerateNumbers();
     }
 
-    public EuromilhoesResult? GetByNumbers(string numbers) =>
-        this.Results
-            .FirstOrDefault(x => x.Numbers.Equals(numbers));
-
-    public IEnumerable<EuromilhoesResult> GetRepeated() =>
-        this.Results
-            .GroupBy(s => s.Numbers)
-            .Where(x => x.Count() > 1)
-            .SelectMany(x => x);
-
-    private IEnumerable<EuromilhoesResult> ParseHtml(string html)
+    private static IEnumerable<EuromilhoesResult> ParseHtml(string html)
     {
         var htmlSnippet = new HtmlDocument();
         htmlSnippet.LoadHtml(html);

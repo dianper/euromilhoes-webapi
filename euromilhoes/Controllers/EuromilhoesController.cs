@@ -17,25 +17,13 @@ public class EuromilhoesController : ControllerBase
     [HttpGet]
     public IActionResult Last10()
     {
-        return Ok(this.euromilhoesService.Results.Take(10));
+        return Ok(this.euromilhoesService.GetLast10());
     }
 
     [HttpGet]
     public IActionResult Generate()
     {
-        var numbers = "";
-
-        while (numbers.Length == 0)
-        {
-            var nums = this.euromilhoesService.GenerateNumbers();
-
-            if (this.euromilhoesService.GetByNumbers(nums) == null)
-            {
-                numbers = nums;
-            }
-        }
-
-        return Ok(numbers);
+        return Ok(this.euromilhoesService.GenerateNumbers());
     }
 
     [HttpGet]
@@ -46,18 +34,20 @@ public class EuromilhoesController : ControllerBase
             throw new ArgumentNullException(nameof(numbers));
         }
 
-        var result = this.euromilhoesService.GetByNumbers(numbers);
-
-        return Ok(new
-        {
-            exists = result != null,
-            result
-        });
+        return Ok(this.euromilhoesService.GetByNumbers(numbers));
     }
 
     [HttpGet]
     public IActionResult Repeated()
     {
         return Ok(this.euromilhoesService.GetRepeated());
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync(CancellationToken cancellation = default)
+    {
+        await this.euromilhoesService.DoCrawlingAsync(cancellation);
+
+        return NoContent();
     }
 }

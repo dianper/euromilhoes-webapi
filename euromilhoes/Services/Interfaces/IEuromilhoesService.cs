@@ -4,13 +4,13 @@ using euromilhoes.Models;
 
 public interface IEuromilhoesService
 {
-    Task<IEnumerable<EuromilhoesResult>> GetAsync(string year, CancellationToken cancellationToken = default);
+    Task DoCrawlingAsync(CancellationToken cancellationToken = default);
 
-    IReadOnlyList<EuromilhoesResult> Results { get; set; }
+    IEnumerable<EuromilhoesResult> GetLast10();
 
-    string GenerateNumbers();
+    IEnumerable<EuromilhoesResult> GetRepeated();
 
     EuromilhoesResult? GetByNumbers(string numbers);
 
-    IEnumerable<EuromilhoesResult> GetRepeated();
+    string GenerateNumbers();
 }

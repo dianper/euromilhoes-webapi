@@ -21,21 +21,11 @@ public class EuromilhoesBackgroundService : IHostedService, IDisposable
         this.logger.LogInformation("Dispose");
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("StartAsync");
 
-        var range = Enumerable.Range(2004, (DateTime.Now.Year + 1) - 2004);
-        var results = new List<EuromilhoesResult>();
-
-        foreach (var year in range)
-        {
-            results.AddRange(await this.euromilhoesService.GetAsync(year.ToString(), cancellationToken));
-        }
-
-        this.euromilhoesService.Results = results
-            .OrderByDescending(x => x.Date)
-            .ToList();
+        return this.euromilhoesService.DoCrawlingAsync(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
