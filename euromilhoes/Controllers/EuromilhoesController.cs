@@ -37,7 +37,7 @@ public class EuromilhoesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Exists(string numbers, string stars)
+    public IActionResult GetByNumbersAndStars(string numbers, string stars)
     {
         if (string.IsNullOrWhiteSpace(numbers))
         {

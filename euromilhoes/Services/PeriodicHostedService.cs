@@ -34,8 +34,7 @@ public class PeriodicHostedService : BackgroundService
                 var lastResult = await _euromilhoesCrawlerService.GetLastResultAsync(stoppingToken);
                 if (lastResult != null)
                 {
-                    var result = _euromilhoesService.GetByNumbersAndStars(lastResult.Numbers, lastResult.Stars);
-                    if (result == null)
+                    if (!_euromilhoesService.Exists(lastResult.Numbers, lastResult.Stars))
                     {
                         _logger.LogInformation("Getting results from the website.");
 

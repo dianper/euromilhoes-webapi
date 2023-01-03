@@ -2,6 +2,7 @@
 
 using euromilhoes.Models;
 using euromilhoes.Services.Interfaces;
+using System;
 
 public class EuromilhoesService : IEuromilhoesService
 {
@@ -27,30 +28,37 @@ public class EuromilhoesService : IEuromilhoesService
         _results
             .FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars));
 
+    public bool Exists(string numbers, string stars) =>
+        _results
+            .FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars)) != null;
+
     public string GenerateNumbers()
     {
         var random = new Random();
-        var result = new HashSet<int>(5);
+        var numbers = GenerateNumbers(random, 5, 50);
+        var stars = GenerateNumbers(random, 2, 12);
 
-        for (int i = 0; i < 5; i++)
+        if (!this.Exists(numbers, stars))
         {
-            var num = 0;
-            do
-            {
-                num = random.Next(1, 50);
-
-                // TODO: check if the number is between the ones that leave the most
-
-            } while (!result.Add(num));
-        }
-
-        var numbers = string.Join("-", result.OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
-
-        if (this.GetByNumbersAndStars(numbers, string.Empty) == null)
-        {
-            return numbers;
+            return $"{numbers} : {stars}";
         }
 
         return GenerateNumbers();
+    }
+
+    private string GenerateNumbers(Random random, int capacity, int maxValue)
+    {
+        var hash = new HashSet<int>(capacity);
+
+        for (int i = 0; i < capacity; i++)
+        {
+            int num;
+            do
+            {
+                num = random.Next(1, maxValue);
+            } while (!hash.Add(num));
+        }
+
+        return string.Join("-", hash.OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
     }
 }

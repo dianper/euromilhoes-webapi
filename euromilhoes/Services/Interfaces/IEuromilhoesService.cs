@@ -12,5 +12,7 @@ public interface IEuromilhoesService
 
     EuromilhoesResult? GetByNumbersAndStars(string numbers, string stars);
 
+    bool Exists(string numbers, string stars);
+
     string GenerateNumbers();
 }
