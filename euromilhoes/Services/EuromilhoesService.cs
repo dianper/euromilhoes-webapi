@@ -23,9 +23,9 @@ public class EuromilhoesService : IEuromilhoesService
             .Where(x => x.Count() > 1)
             .SelectMany(x => x);
 
-    public EuromilhoesResult? GetByNumbers(string numbers) =>
+    public EuromilhoesResult? GetByNumbersAndStars(string numbers, string stars) =>
         _results
-            .FirstOrDefault(x => x.Numbers.Equals(numbers));
+            .FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars));
 
     public string GenerateNumbers()
     {
@@ -46,7 +46,7 @@ public class EuromilhoesService : IEuromilhoesService
 
         var numbers = string.Join("-", result.OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
 
-        if (this.GetByNumbers(numbers) == null)
+        if (this.GetByNumbersAndStars(numbers, string.Empty) == null)
         {
             return numbers;
         }

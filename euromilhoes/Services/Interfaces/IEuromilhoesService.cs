@@ -10,7 +10,7 @@ public interface IEuromilhoesService
 
     IEnumerable<EuromilhoesResult> GetRepeated();
 
-    EuromilhoesResult? GetByNumbers(string numbers);
+    EuromilhoesResult? GetByNumbersAndStars(string numbers, string stars);
 
     string GenerateNumbers();
 }

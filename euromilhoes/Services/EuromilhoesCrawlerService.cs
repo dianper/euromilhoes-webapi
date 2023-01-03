@@ -45,14 +45,14 @@ public class EuromilhoesCrawlerService : IEuromilhoesCrawlerService
         }
     }
 
-    public async Task GetLastResultAsync(CancellationToken cancellationToken = default)
+    public async Task<EuromilhoesResult?> GetLastResultAsync(CancellationToken cancellationToken = default)
     {
         try
         {
             var httpResponseMessage = await _client.GetAsync("resultado-euromilhoes.asp", cancellationToken);
             var html = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
 
-            ParseLastResult(html); ;
+            return ParseLastResult(html); ;
         }
         catch (Exception ex)
         {
@@ -60,6 +60,8 @@ public class EuromilhoesCrawlerService : IEuromilhoesCrawlerService
             {
                 ex.Message
             });
+
+            return default;
         }
     }
 
@@ -83,23 +85,29 @@ public class EuromilhoesCrawlerService : IEuromilhoesCrawlerService
         }
     }
 
-    private static EuromilhoesResult ParseLastResult(string html)
+    private static EuromilhoesResult? ParseLastResult(string html)
     {
         _htmlDocument.LoadHtml(html);
+
+        var dateString = string.Empty;
+        var date = (DateTime)default;
+        var dateHtmlNode = _htmlDocument.DocumentNode.SelectSingleNode("//div[@class='date arrowBottom']//span[@class='show-maxphablet']");
+        if (dateHtmlNode != null)
+        {
+            dateString = ReplaceMonth(dateHtmlNode.InnerText.Replace("&nbsp;", " ").AsSpan(3).Trim().ToString());
+            date = DateTime.Parse(dateString);
+        }
 
         var nodes = _htmlDocument.DocumentNode.SelectNodes("//div[@class='combi balls']//div//span[@class='int-num']");
         if (nodes != null)
         {
-            var num1 = nodes[0].InnerText;
-            var num2 = nodes[1].InnerText;
-            var num3 = nodes[2].InnerText;
-            var num4 = nodes[3].InnerText;
-            var num5 = nodes[4].InnerText;
-            var start1 = nodes[5].InnerText;
-            var start2 = nodes[6].InnerText;
+            var numbers = string.Join("-", nodes.Take(5).Select(s => s.InnerText.PadLeft(2, '0')));
+            var stars = string.Join("-", nodes.TakeLast(2).Select(s => s.InnerText.PadLeft(2, '0')));
+
+            return new EuromilhoesResult(dateString, date, "", numbers, stars);
         }
 
-        return new EuromilhoesResult(default, default, default, default, default);
+        return default;
     }
 
     private static string ReplaceMonth(string text)

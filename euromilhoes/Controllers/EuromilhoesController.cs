@@ -37,16 +37,21 @@ public class EuromilhoesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Exists(string numbers)
+    public IActionResult Exists(string numbers, string stars)
     {
         if (string.IsNullOrWhiteSpace(numbers))
         {
             throw new ArgumentNullException(nameof(numbers));
         }
 
-        _logger.LogInformation($"Checking numbers ({numbers})");
+        if (string.IsNullOrWhiteSpace(stars))
+        {
+            throw new ArgumentNullException(nameof(stars));
+        }
 
-        var num = _euromilhoesService.GetByNumbers(numbers);
+        _logger.LogInformation($"Checking numbers ({numbers}) & stars ({stars})");
+
+        var num = _euromilhoesService.GetByNumbersAndStars(numbers, stars);
 
         if (num != null)
         {
