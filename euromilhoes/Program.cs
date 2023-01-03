@@ -6,7 +6,9 @@ builder.WebHost.UseUrls("http://*:" + Environment.GetEnvironmentVariable("PORT")
 
 // Add services to the container.
 builder.Services.AddSingleton<IEuromilhoesService, EuromilhoesService>();
-builder.Services.AddHostedService<EuromilhoesBackgroundService>();
+builder.Services.AddSingleton<IEuromilhoesCrawlerService, EuromilhoesCrawlerService>();
+builder.Services.AddSingleton<PeriodicHostedService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<PeriodicHostedService>());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

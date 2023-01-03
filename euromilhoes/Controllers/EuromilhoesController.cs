@@ -7,23 +7,33 @@ using Microsoft.AspNetCore.Mvc;
 [Route("[controller]/[action]")]
 public class EuromilhoesController : ControllerBase
 {
-    private readonly IEuromilhoesService euromilhoesService;
+    private readonly IEuromilhoesService _euromilhoesService;
+    private readonly ILogger<EuromilhoesController> _logger;
 
-    public EuromilhoesController(IEuromilhoesService euromilhoesService)
+    public EuromilhoesController(
+        IEuromilhoesService euromilhoesService,
+        ILogger<EuromilhoesController> logger)
     {
-        this.euromilhoesService = euromilhoesService;
+        _euromilhoesService = euromilhoesService;
+        _logger = logger;
     }
 
     [HttpGet]
     public IActionResult Last10()
     {
-        return Ok(this.euromilhoesService.GetLast10());
+        _logger.LogInformation("Getting last 10 results.");
+
+        return Ok(_euromilhoesService.GetLast10());
     }
 
     [HttpGet]
     public IActionResult Generate()
     {
-        return Ok(this.euromilhoesService.GenerateNumbers());
+        var numbers = _euromilhoesService.GenerateNumbers();
+
+        _logger.LogInformation($"Generated numbers ({numbers}).");
+
+        return Ok(numbers);
     }
 
     [HttpGet]
@@ -34,20 +44,23 @@ public class EuromilhoesController : ControllerBase
             throw new ArgumentNullException(nameof(numbers));
         }
 
-        return Ok(this.euromilhoesService.GetByNumbers(numbers));
+        _logger.LogInformation($"Checking numbers ({numbers})");
+
+        var num = _euromilhoesService.GetByNumbers(numbers);
+
+        if (num != null)
+        {
+            return Ok(num);
+        }
+
+        return NotFound();
     }
 
     [HttpGet]
     public IActionResult Repeated()
     {
-        return Ok(this.euromilhoesService.GetRepeated());
-    }
+        _logger.LogInformation("Getting repeated numbers.");
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateAsync(CancellationToken cancellation = default)
-    {
-        await this.euromilhoesService.DoCrawlingAsync(cancellation);
-
-        return NoContent();
+        return Ok(_euromilhoesService.GetRepeated());
     }
 }

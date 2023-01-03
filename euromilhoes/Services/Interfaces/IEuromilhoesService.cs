@@ -4,7 +4,7 @@ using euromilhoes.Models;
 
 public interface IEuromilhoesService
 {
-    Task DoCrawlingAsync(CancellationToken cancellationToken = default);
+    void SetResults(IEnumerable<EuromilhoesResult> results);
 
     IEnumerable<EuromilhoesResult> GetLast10();
 
