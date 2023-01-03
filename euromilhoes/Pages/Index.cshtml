@@ -1,0 +1,16 @@
+﻿@page
+@model euromilhoes.Pages.IndexModel
+@{
+    ViewData["Title"] = "Euromilhões";
+}
+
+<br />
+
+<ul>
+    @{
+        foreach (var item in Model.Results)
+        {
+            <li>@item.Numbers</li>
+        }
+    }
+</ul>

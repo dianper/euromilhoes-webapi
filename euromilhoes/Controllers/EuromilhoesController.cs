@@ -4,7 +4,7 @@ using euromilhoes.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("api/[controller]")]
 public class EuromilhoesController : ControllerBase
 {
     private readonly IEuromilhoesService _euromilhoesService;
@@ -18,7 +18,7 @@ public class EuromilhoesController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    [HttpGet("/last10")]
     public IActionResult Last10()
     {
         _logger.LogInformation("Getting last 10 results.");
@@ -26,42 +26,57 @@ public class EuromilhoesController : ControllerBase
         return Ok(_euromilhoesService.GetLast10());
     }
 
-    [HttpGet]
-    public IActionResult Generate()
+    [HttpGet("/generate")]
+    public IActionResult GenerateKey()
     {
-        var numbers = _euromilhoesService.GenerateNumbers();
+        var numbers = _euromilhoesService.GenerateKey();
 
         _logger.LogInformation($"Generated numbers ({numbers}).");
 
         return Ok(numbers);
     }
 
-    [HttpGet]
-    public IActionResult GetByNumbersAndStars(string numbers, string stars)
+    [HttpGet("/key/{key}")]
+    public IActionResult GetByKey(string key)
     {
-        if (string.IsNullOrWhiteSpace(numbers))
+        if (key == null)
         {
-            throw new ArgumentNullException(nameof(numbers));
+            throw new ArgumentNullException(nameof(key));
         }
 
-        if (string.IsNullOrWhiteSpace(stars))
+        var values = key.Split(new char[] { ',', '-' });
+        var isValid = values.All(x => int.TryParse(x, out var num) && num > 0 && num <= 50 ? true : false);
+        if (!isValid)
         {
-            throw new ArgumentNullException(nameof(stars));
+            return BadRequest(new { isValid, message = "The argument must be an array of numbers between 1 and 50!" });
         }
 
-        _logger.LogInformation($"Checking numbers ({numbers}) & stars ({stars})");
+        if (values.Length != 7)
+        {
+            return BadRequest(new { isValid = false, message = "The key must be 7 digits long!" });
+        }
 
-        var num = _euromilhoesService.GetByNumbersAndStars(numbers, stars);
+        var numbers = string.Join("-", values.Take(5).OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
 
+        if (!values.TakeLast(2).All(x => int.Parse(x) > 0 && int.Parse(x) <= 12))
+        {
+            return BadRequest(new { isValid, message = "The stars must be between 1 and 12!" });
+        }
+
+        var stars = string.Join("-", values.TakeLast(2).OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
+
+        _logger.LogInformation($"Checking key {key}");
+
+        var num = _euromilhoesService.GetByKey(numbers, stars);
         if (num != null)
         {
-            return Ok(num);
+            return Ok(new { isValid = true, result = num });
         }
 
-        return NotFound();
+        return NotFound(new { isValid = true, message = "Key not found!" });
     }
 
-    [HttpGet]
+    [HttpGet("/repeated")]
     public IActionResult Repeated()
     {
         _logger.LogInformation("Getting repeated numbers.");

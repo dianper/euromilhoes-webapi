@@ -10,9 +10,9 @@ public interface IEuromilhoesService
 
     IEnumerable<EuromilhoesResult> GetRepeated();
 
-    EuromilhoesResult? GetByNumbersAndStars(string numbers, string stars);
+    EuromilhoesResult? GetByKey(string numbers, string stars);
 
     bool Exists(string numbers, string stars);
 
-    string GenerateNumbers();
+    (string num, string star) GenerateKey();
 }

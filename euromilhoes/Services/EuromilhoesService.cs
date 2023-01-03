@@ -24,7 +24,7 @@ public class EuromilhoesService : IEuromilhoesService
             .Where(x => x.Count() > 1)
             .SelectMany(x => x);
 
-    public EuromilhoesResult? GetByNumbersAndStars(string numbers, string stars) =>
+    public EuromilhoesResult? GetByKey(string numbers, string stars) =>
         _results
             .FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars));
 
@@ -32,21 +32,21 @@ public class EuromilhoesService : IEuromilhoesService
         _results
             .FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars)) != null;
 
-    public string GenerateNumbers()
+    public (string num, string star) GenerateKey()
     {
         var random = new Random();
-        var numbers = GenerateNumbers(random, 5, 50);
-        var stars = GenerateNumbers(random, 2, 12);
+        var numbers = GenerateValue(random, 5, 50);
+        var stars = GenerateValue(random, 2, 12);
 
         if (!this.Exists(numbers, stars))
         {
-            return $"{numbers} : {stars}";
+            return (numbers, stars);
         }
 
-        return GenerateNumbers();
+        return GenerateKey();
     }
 
-    private string GenerateNumbers(Random random, int capacity, int maxValue)
+    private string GenerateValue(Random random, int capacity, int maxValue)
     {
         var hash = new HashSet<int>(capacity);
 

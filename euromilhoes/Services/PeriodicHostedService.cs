@@ -7,7 +7,7 @@ public class PeriodicHostedService : BackgroundService
     private readonly ILogger<PeriodicHostedService> _logger;
     private readonly IEuromilhoesCrawlerService _euromilhoesCrawlerService;
     private readonly IEuromilhoesService _euromilhoesService;
-    private readonly TimeSpan _period = TimeSpan.FromSeconds(15);
+    private readonly TimeSpan _period = TimeSpan.FromHours(1);
     private DateTime _startTime;
 
     public PeriodicHostedService(
