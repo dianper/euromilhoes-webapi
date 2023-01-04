@@ -2,7 +2,6 @@
 
 using euromilhoes.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 [ApiController]
 [Route("api/[controller]")]
