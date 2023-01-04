@@ -6,13 +6,13 @@ public interface IEuromilhoesService
 {
     void SetResults(IEnumerable<EuromilhoesResult> results);
 
-    IEnumerable<EuromilhoesResult> GetLast10();
+    ApiResult<IEnumerable<EuromilhoesResult>> GetLast(int quantity);
 
-    IEnumerable<EuromilhoesResult> GetRepeated();
+    ApiResult<IEnumerable<EuromilhoesResult>> GetRepeated();
 
-    EuromilhoesResult? GetByKey(string numbers, string stars);
+    ApiResult<EuromilhoesResult> GetByKey(string key);
 
-    bool Exists(string numbers, string stars);
+    ApiResult<bool> Exists(string numbers, string stars);
 
-    (string num, string star) GenerateKey();
+    ApiResult<EuromilhoesResult> GenerateKey();
 }

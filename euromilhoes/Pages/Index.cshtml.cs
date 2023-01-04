@@ -17,6 +17,6 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        Results = _euromilhoesService.GetLast10();
+        Results = _euromilhoesService.GetLast(10).Data;
     }
 }
