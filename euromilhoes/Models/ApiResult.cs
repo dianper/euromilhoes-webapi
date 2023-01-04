@@ -1,6 +1,6 @@
 ﻿namespace euromilhoes.Models;
 
-public class ApiResult<T>
+public class ApiResult<T> where T : class
 {
     public ApiResult(T? data = default)
     {

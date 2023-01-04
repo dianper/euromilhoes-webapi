@@ -30,7 +30,6 @@ public class EuromilhoesService : IEuromilhoesService
         return new ApiResult<IEnumerable<EuromilhoesResult>>(data);
     }
 
-
     public ApiResult<IEnumerable<EuromilhoesResult>> GetRepeated()
     {
         var data = _results
@@ -79,27 +78,20 @@ public class EuromilhoesService : IEuromilhoesService
         return new ApiResult<EuromilhoesResult>(data);
     }
 
-    public ApiResult<bool> Exists(string numbers, string stars)
-    {
-        var data = _results.FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars)) != null;
-
-        return new ApiResult<bool>(data);
-    }
-
     public ApiResult<EuromilhoesResult> GenerateKey()
     {
         var random = new Random();
         var numbers = GenerateValue(random, 5, 50);
         var stars = GenerateValue(random, 2, 12);
 
-        if (!this.Exists(numbers, stars).Data)
+        if (this.GetByKey($"{numbers}-{stars}").Data == null)
         {
             return new ApiResult<EuromilhoesResult>(
                 new EuromilhoesResult(
-                    DateTime.UtcNow.ToString(), 
-                    DateTime.UtcNow, 
-                    string.Empty, 
-                    numbers, 
+                    DateTime.UtcNow.ToString(),
+                    DateTime.UtcNow,
+                    string.Empty,
+                    numbers,
                     stars));
         }
 

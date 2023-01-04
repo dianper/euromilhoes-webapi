@@ -12,7 +12,5 @@ public interface IEuromilhoesService
 
     ApiResult<EuromilhoesResult> GetByKey(string key);
 
-    ApiResult<bool> Exists(string numbers, string stars);
-
     ApiResult<EuromilhoesResult> GenerateKey();
 }
