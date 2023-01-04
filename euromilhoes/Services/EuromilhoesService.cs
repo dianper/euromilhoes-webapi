@@ -40,7 +40,7 @@ public class EuromilhoesService : IEuromilhoesService
         return new ApiResult<IEnumerable<EuromilhoesResult>>(data);
     }
 
-    public ApiResult<EuromilhoesResult> GetByKey(string key)
+    public ApiResult<EuromilhoesResult> Get(string key)
     {
         var values = key.Split(new char[] { ',', '-' });
         var isValid = values.All(x => int.TryParse(x, out var num) && num > 0 && num <= 50 ? true : false);
@@ -73,7 +73,16 @@ public class EuromilhoesService : IEuromilhoesService
 
         var numbers = string.Join("-", values.Take(5).OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
         var stars = string.Join("-", values.TakeLast(2).OrderBy(x => x).Select(x => x.ToString().PadLeft(2, '0')));
+
         var data = _results.FirstOrDefault(x => x.Numbers.Equals(numbers) && x.Stars.Equals(stars));
+        if (data == null)
+        {
+            return new ApiResult<EuromilhoesResult>()
+            {
+                Success = false,
+                Message = "Key not found!"
+            };
+        }
 
         return new ApiResult<EuromilhoesResult>(data);
     }
@@ -84,7 +93,7 @@ public class EuromilhoesService : IEuromilhoesService
         var numbers = GenerateValue(random, 5, 50);
         var stars = GenerateValue(random, 2, 12);
 
-        if (this.GetByKey($"{numbers}-{stars}").Data == null)
+        if (this.Get($"{numbers}-{stars}").Data == null)
         {
             return new ApiResult<EuromilhoesResult>(
                 new EuromilhoesResult(

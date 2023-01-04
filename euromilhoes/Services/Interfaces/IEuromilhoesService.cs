@@ -10,7 +10,7 @@ public interface IEuromilhoesService
 
     ApiResult<IEnumerable<EuromilhoesResult>> GetRepeated();
 
-    ApiResult<EuromilhoesResult> GetByKey(string key);
+    ApiResult<EuromilhoesResult> Get(string key);
 
     ApiResult<EuromilhoesResult> GenerateKey();
 }

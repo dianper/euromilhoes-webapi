@@ -47,7 +47,7 @@ public class EuromilhoesController : ControllerBase
 
         _logger.LogInformation($"Checking key {key}");
 
-        return Ok(_euromilhoesService.GetByKey(key));
+        return Ok(_euromilhoesService.Get(key));
     }
 
     [HttpGet("repeated")]
